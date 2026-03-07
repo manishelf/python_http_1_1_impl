@@ -3,6 +3,8 @@
 #import asyncio
 import socket
 
+
+
 #async def handle(sock: socket):
 def handle(sock: socket):
     # Wait for an incoming connection.
@@ -28,6 +30,29 @@ def handle(sock: socket):
 
 def main():
     address = ('', 8000)
+    """
+     https://github.com/python/cpython/blob/3.14/Lib/socket.py
+     the socket implementation comes from Modules/socketmodule.c
+     which creates os dependent TCP sockets from c
+     eg fd = WSASocketW(family, type, proto,
+                        NULL, 0,
+                        WSA_FLAG_OVERLAPPED | WSA_FLAG_NO_HANDLE_INHERIT);
+     on Windows
+     or on UNIX as fd = socket(family, type, proto);
+
+     init - sock_initobj_impl(...)
+     bind - sock_bind(...) -> <sys/socket.h> bind
+     listen - sock_listen(...) -> <sys/socket.h> listen
+     accept - _accept -> sock_accept_imp(....) -> <sys/socket.h> accpet
+     makefile - 
+        raw = SocketIO(self, rawmode)
+        buffer = io.BufferedWriter(raw, buffering)
+        encoding = io.text_encoding(encoding)
+        file = io.TextIOWrapper(buffer, encoding, errors, newline)
+        file.mode = mode
+     close - _socket_socket_close_impl -> SOCKETCLOSE(fd) -> closesocket(..) windows or close(..) for unix
+
+    """
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     #sock.setblocking(False)
     sock.setblocking(True)
