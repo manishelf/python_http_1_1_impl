@@ -1,0 +1,33 @@
+# goal - implement http v1.1 
+import asyncio
+import socket
+
+async def handle(sock: socket):
+    # Wait for an incoming connection.
+    #loop = asyncio.get_running_loop()
+    #conn, addr = await loop.sock_accept(sock)
+    conn, addr = sock.accept() 
+
+def main():
+    address = ('', 8000)
+    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    #sock.setblocking(False)
+    sock.setblocking(True)
+
+    try:
+        try:
+            sock.bind(address)
+        except error as err:
+            msg = '%s (while attempting to bind on address %r)' % \
+                    (err.strerror, address)
+            raise error(err.errno, msg) from None
+        sock.listen()
+    except error:
+        sock.close()
+        raise
+    
+    asyncio.run(handle(sock))
+    sock.close()
+
+if __name__ == '__main__':
+    main()
