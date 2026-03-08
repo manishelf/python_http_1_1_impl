@@ -1,0 +1,19 @@
+.title{                             
+  text-align   :   center;           
+}                                   
+
+.container{
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+}
+
+#side-pannel{
+  width: 30%;
+  height: 100%
+}
+#main{
+  width: 100%;
+  height: 100%;
+}
+                                   
