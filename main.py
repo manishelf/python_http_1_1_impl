@@ -52,7 +52,7 @@ def handle(sock: socket):
        Sec-Fetch-User: ?1
        Priority: u=0, i
     """
-
+ 
     # - printing the request - 
     #print(filer.read()) # this does not work as browser dont explicitly close the connection
 
@@ -73,7 +73,31 @@ def handle(sock: socket):
         file.write("HTTP/1.1 500 \n")
     if verb == 'GET':
         handle_get(uri, file)
-
+    # the connection is kept alive once made as per 1.1 spec , it is closed only when Connection: close is sent
+    # until then the tcp connection is kept alive
+    # in real live the connection is kept alive only until certain timeout
+    # This avoids the cost of opening a new TCP connection for every request.
+    # Opening a new TCP connection requires:
+    #   TCP 3-way handshake
+    #   Possible TLS handshake
+    #   Kernel resource allocation
+    # Example handshake for TCP:
+    #   Client → SYN
+    #   Server → SYN-ACK
+    #   Client → ACK
+    # Typical Linux kernel memory per connection:
+    #   ~2–10 KB
+    # So:
+    #   10,000 connections ≈ 20–100 MB RAM
+    # This is manageable for most servers.
+    # The bigger problem historically was threads, not connections.
+    # Old servers:
+    #   1 connection = 1 thread
+    #   10k users → 10k threads → huge memory + context switching
+    # mordern: 
+    #   epoll
+    #   async event loops
+    # HTTP/2 requires a active connection that does not close
     print(" -------- ")
 
 def main():
